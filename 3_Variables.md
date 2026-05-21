@@ -21,13 +21,13 @@ flowchart LR
 
 ## Types de variables
 
-| Type | Description | Exemple |
-|------|-------------|---------|
-| **Query** | Valeurs issues d'une requête PromQL | Liste des instances scrapées |
-| **Custom** | Valeurs saisies manuellement | `prod,staging,dev` |
-| **Constant** | Valeur fixe réutilisable | URL d'un environnement |
-| **Textbox** | Zone de texte libre | Filtre regex custom |
-| **Interval** | Intervalles de temps | `1m,5m,15m,1h` |
+| Type         | Description                         | Exemple                      |
+| ------------ | ----------------------------------- | ---------------------------- |
+| **Query**    | Valeurs issues d'une requête PromQL | Liste des instances scrapées |
+| **Custom**   | Valeurs saisies manuellement        | `prod,staging,dev`           |
+| **Constant** | Valeur fixe réutilisable            | URL d'un environnement       |
+| **Textbox**  | Zone de texte libre                 | Filtre regex custom          |
+| **Interval** | Intervalles de temps                | `1m,5m,15m,1h`               |
 
 ## Exercice : Rendre le dashboard dynamique
 
@@ -45,14 +45,14 @@ Dans le menu de gauche :
 
 Remplissez les champs :
 
-| Champ | Valeur |
-|-------|--------|
-| Type | `Query` |
-| Name | `instance` |
-| Label | `Serveur` |
-| Data source | `Prometheus` |
-| Query | `label_values(up, instance)` |
-| Refresh | `On dashboard load` |
+| Champ       | Valeur                       |
+| ----------- | ---------------------------- |
+| Type        | `Query`                      |
+| Name        | `instance`                   |
+| Label       | `Serveur`                    |
+| Data source | `Prometheus`                 |
+| Query       | `label_values(up, instance)` |
+| Refresh     | `On dashboard load`          |
 
 Cliquez sur **Apply**.
 
@@ -72,36 +72,34 @@ Sauvegardez le panel.
 
 **Réponse — Listez les instances disponibles dans votre menu :**
 
-    (votre réponse ici)
-
+![alt text](var.png)
 
 ### 4. Ajouter une variable `job`
 
 Créez une deuxième variable pour filtrer par job Prometheus.
 
-| Champ | Valeur |
-|-------|--------|
-| Type | `Query` |
-| Name | `job` |
-| Label | `Job` |
+| Champ | Valeur                  |
+| ----- | ----------------------- |
+| Type  | `Query`                 |
+| Name  | `job`                   |
+| Label | `Job`                   |
 | Query | `label_values(up, job)` |
 
 **Réponse — Quels jobs apparaissent dans le menu ?**
 
-    (votre réponse ici)
-
+![alt text](var2.png)
 
 ### 5. Variable d'intervalle pour le rate()
 
 Créez une variable pour contrôler l'intervalle utilisé dans les fonctions `rate()`.
 
-| Champ | Valeur |
-|-------|--------|
-| Type | `Interval` |
-| Name | `interval` |
-| Label | `Intervalle` |
-| Values | `1m,5m,15m,30m,1h` |
-| Auto option | activé |
+| Champ       | Valeur             |
+| ----------- | ------------------ |
+| Type        | `Interval`         |
+| Name        | `interval`         |
+| Label       | `Intervalle`       |
+| Values      | `1m,5m,15m,30m,1h` |
+| Auto option | activé             |
 
 Modifiez ensuite la requête du panel **Requêtes HTTP/s** :
 
@@ -111,8 +109,10 @@ sum by(route) (rate(http_requests_total[$interval]))
 
 **Réponse — Que se passe-t-il si vous choisissez un intervalle de 1m vs 30m ?**
 
-    (votre réponse ici)
-
+1m:
+![alt text](1m.png)  
+30m:
+![alt text](30m.png)
 
 ## Annotations
 
@@ -123,9 +123,9 @@ Les **annotations** permettent d'afficher des événements ponctuels sur vos gra
 1. Dans **Dashboard settings → Annotations → Add annotation query**
 2. Remplissez :
 
-| Champ | Valeur |
-|-------|--------|
-| Name | `Événements` |
+| Champ       | Valeur          |
+| ----------- | --------------- |
+| Name        | `Événements`    |
 | Data source | `-- Grafana --` |
 
 3. Cliquez sur **Apply**
@@ -134,12 +134,12 @@ Les **annotations** permettent d'afficher des événements ponctuels sur vos gra
 
 **Réponse — A quoi cela peut-il servir en production ?**
 
-    (votre réponse ici)
-
+sert à ajouter des point de repères sur les graphiques pour identifier des événements importants
 
 ## Résultat
 
 Votre dashboard est maintenant :
+
 - **dynamique** : il s'adapte à n'importe quelle instance ou job
 - **paramétrable** : l'intervalle de rate() est ajustable sans modifier les requêtes
 - **annoté** : vous pouvez marquer des événements importants

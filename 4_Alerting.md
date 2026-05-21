@@ -4,13 +4,13 @@ Prometheus possède son propre système d'alertes (Alertmanager). Grafana intèg
 
 ## Grafana Alerting vs Prometheus Alertmanager
 
-| | Grafana Alerting | Prometheus + Alertmanager |
-|-|-----------------|--------------------------|
-| **Configuration** | Interface graphique | Fichiers YAML |
-| **Sources de données** | Multi-sources (Prometheus, Loki…) | Prometheus uniquement |
-| **Routing** | Contact points + policies | Routes Alertmanager |
-| **Silences** | Interface graphique | Interface Alertmanager |
-| **Usage recommandé** | Petites/moyennes stacks, multi-sources | Grandes stacks, infra-as-code |
+|                        | Grafana Alerting                       | Prometheus + Alertmanager     |
+| ---------------------- | -------------------------------------- | ----------------------------- |
+| **Configuration**      | Interface graphique                    | Fichiers YAML                 |
+| **Sources de données** | Multi-sources (Prometheus, Loki…)      | Prometheus uniquement         |
+| **Routing**            | Contact points + policies              | Routes Alertmanager           |
+| **Silences**           | Interface graphique                    | Interface Alertmanager        |
+| **Usage recommandé**   | Petites/moyennes stacks, multi-sources | Grandes stacks, infra-as-code |
 
 👉 Les deux approches sont complémentaires. En entreprise, on utilise souvent les deux.
 
@@ -29,13 +29,13 @@ flowchart LR
     style D fill:#d9f2e1,stroke:#6bda9a,stroke-width:2px,color:#000
 ```
 
-| Concept | Description |
-|---------|-------------|
-| **Alert Rule** | Requête PromQL + condition de déclenchement |
-| **Alert State** | État de l'alerte : Normal, Pending, Firing |
-| **Contact Point** | Canal de notification (email, webhook…) |
+| Concept                 | Description                                      |
+| ----------------------- | ------------------------------------------------ |
+| **Alert Rule**          | Requête PromQL + condition de déclenchement      |
+| **Alert State**         | État de l'alerte : Normal, Pending, Firing       |
+| **Contact Point**       | Canal de notification (email, webhook…)          |
 | **Notification Policy** | Règles de routage : quelle alerte → quel contact |
-| **Silence** | Mise en pause temporaire d'une alerte |
+| **Silence**             | Mise en pause temporaire d'une alerte            |
 
 ## Configurer le SMTP Gmail
 
@@ -62,7 +62,7 @@ Les mots de passe d'application nécessitent que la 2FA soit activée sur le com
 Un mot de passe d'application est un code à 16 caractères généré par Google, utilisé à la place du mot de passe principal pour les applications tierces.
 
 1. Toujours dans **Sécurité**, cherchez **Mots de passe des applications**  
-   *(visible uniquement si la 2FA est activée)*
+   _(visible uniquement si la 2FA est activée)_
 2. Dans le champ **Sélectionner une application**, saisissez un nom (ex : `Grafana`)
 3. Cliquez sur **Créer**
 4. Google affiche un mot de passe sous la forme `xxxx xxxx xxxx xxxx`
@@ -71,7 +71,7 @@ Un mot de passe d'application est un code à 16 caractères généré par Google
 
 **Réponse — Avez-vous bien obtenu un mot de passe d'application à 16 caractères ?**
 
-    (votre réponse ici)
+oui
 
 ---
 
@@ -82,18 +82,15 @@ Ajoutez les variables d'environnement SMTP au service Grafana dans votre `docker
 **IMPORTANT: Pour GF_SMTP_PASSWORD, mettez le mdp sans espace.**
 
 ```yaml
-
-    environment:
-
-      # Configuration SMTP Gmail
-      - GF_SMTP_ENABLED=true                              # Active le serveur SMTP dans Grafana
-      - GF_SMTP_HOST=smtp.gmail.com:587                   # Serveur Gmail avec port STARTTLS
-      - GF_SMTP_USER=monitoring.alerts.monlabo@gmail.com  # Adresse Gmail du compte émetteur
-      - GF_SMTP_PASSWORD=xxxxxxxxxxxxxxxx              # Mot de passe d'application (sans espaces)
-      - GF_SMTP_FROM_ADDRESS=monitoring.alerts.monlabo@gmail.com  # Adresse affichée dans les emails
-      - GF_SMTP_FROM_NAME=Grafana Alerts                  # Nom affiché dans les emails
-      - GF_SMTP_STARTTLS_POLICY=MandatoryStartTLS         # Force le chiffrement STARTTLS
-
+environment:
+  # Configuration SMTP Gmail
+  - GF_SMTP_ENABLED=true # Active le serveur SMTP dans Grafana
+  - GF_SMTP_HOST=smtp.gmail.com:587 # Serveur Gmail avec port STARTTLS
+  - GF_SMTP_USER=monitoring.alerts.monlabo@gmail.com # Adresse Gmail du compte émetteur
+  - GF_SMTP_PASSWORD=xxxxxxxxxxxxxxxx # Mot de passe d'application (sans espaces)
+  - GF_SMTP_FROM_ADDRESS=monitoring.alerts.monlabo@gmail.com # Adresse affichée dans les emails
+  - GF_SMTP_FROM_NAME=Grafana Alerts # Nom affiché dans les emails
+  - GF_SMTP_STARTTLS_POLICY=MandatoryStartTLS # Force le chiffrement STARTTLS
 ```
 
 > Remplacez `monitoring.alerts.monlabo@gmail.com` par votre adresse et `xxxx xxxx xxxx xxxx` par le mot de passe d'application obtenu à l'étape précédente (retirez les espaces).
@@ -115,9 +112,7 @@ Vous devez voir une ligne confirmant que le SMTP est initialisé sans erreur.
 
 **Réponse — Quelle ligne de log confirme que le SMTP est bien chargé ?**
 
-    (votre réponse ici)
-
----
+## ![alt text](SMTP.png)
 
 ## Configurer un Contact Point
 
@@ -132,11 +127,11 @@ Dans le menu de gauche :
 
 Cliquez sur **Add contact point** et remplissez :
 
-| Champ | Valeur |
-|-------|--------|
-| Name | `Email Alerts` |
-| Integration | `Email` |
-| Addresses | *(votre adresse de réception, peut être différente du compte émetteur)* |
+| Champ       | Valeur                                                                  |
+| ----------- | ----------------------------------------------------------------------- |
+| Name        | `Email Alerts`                                                          |
+| Integration | `Email`                                                                 |
+| Addresses   | _(votre adresse de réception, peut être différente du compte émetteur)_ |
 
 👉 Vous pouvez saisir plusieurs adresses séparées par des points-virgules.
 
@@ -154,19 +149,17 @@ Grafana supporte nativement Discord via les **webhooks**. Cela permet de recevoi
 
 Cliquez sur **Add contact point** et remplissez :
 
-| Champ | Valeur |
-|-------|--------|
-| Name | `Discord Alerts` |
-| Integration | `Discord` |
+| Champ       | Valeur                                                                                                                      |
+| ----------- | --------------------------------------------------------------------------------------------------------------------------- |
+| Name        | `Discord Alerts`                                                                                                            |
+| Integration | `Discord`                                                                                                                   |
 | Webhook URL | `https://discord.com/api/webhooks/1498980985574920204/Dt4A1W8MUQ2D5GsgaGPLyn7oHKX3GJ0xAzzozSLVPjQ50yCmiGtDfPWb3Kl0cai7X0zc` |
 
 Cliquez sur **Test** puis **Save contact point**.
 
 **Réponse — Le message de test est-il bien apparu dans le channel Discord ?**
 
-    (votre réponse ici)
-
----
+## ![alt text](discord.png)
 
 ## Créer des règles d'alerte
 
@@ -181,41 +174,43 @@ L'éditeur de règle se compose de plusieurs sections.
 
 **Section 1 — Define query and alert condition**
 
-| Champ | Valeur |
-|-------|--------|
-| Rule name | `Instance Down` |
-| Data source | `Prometheus` |
-| Metric | *(utilisez l'éditeur de code)* |
-| Requête A | `up == 0` |
-| Condition | `IS ABOVE 0` sur la requête A |
+| Champ       | Valeur                         |
+| ----------- | ------------------------------ |
+| Rule name   | `Instance Down`                |
+| Data source | `Prometheus`                   |
+| Metric      | _(utilisez l'éditeur de code)_ |
+| Requête A   | `up == 0`                      |
+| Condition   | `IS ABOVE 0` sur la requête A  |
 
 👉 En mode **Code**, saisissez directement :
+
 ```promql
 up == 0
 ```
+
 Threshold : `IS ABOVE 0`
 
 **Section 2 — Set evaluation behavior**
 
-| Champ | Valeur |
-|-------|--------|
-| Folder | `Monitoring` *(créez-le)* |
-| Evaluation group | `default` |
-| Pending period | `1m` |
+| Champ            | Valeur                    |
+| ---------------- | ------------------------- |
+| Folder           | `Monitoring` _(créez-le)_ |
+| Evaluation group | `default`                 |
+| Pending period   | `1m`                      |
 
 👉 Le **Pending period** correspond au `for` de Prometheus : l'alerte passe en Firing uniquement si la condition est vraie pendant 1 minute, évitant les faux positifs.
 
 **Section 3 — Configure labels and notifications**
 
-| Champ | Valeur |
-|-------|--------|
+| Champ         | Valeur         |
+| ------------- | -------------- |
 | Contact point | `Email Alerts` |
 
 **Section 4 — Add annotations**
 
-| Champ | Valeur |
-|-------|--------|
-| Summary | `Instance {{ $labels.instance }} est hors ligne` |
+| Champ       | Valeur                                                                                       |
+| ----------- | -------------------------------------------------------------------------------------------- |
+| Summary     | `Instance {{ $labels.instance }} est hors ligne`                                             |
 | Description | `L'instance {{ $labels.instance }} (job: {{ $labels.job }}) ne répond plus depuis 1 minute.` |
 
 Cliquez sur **Save rule**.
@@ -227,6 +222,7 @@ Cliquez sur **Save rule**.
 Créez une nouvelle règle d'alerte avec les paramètres suivants.
 
 **Requête PromQL :**
+
 ```promql
 100 - (avg by(instance) (rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100)
 ```
@@ -236,12 +232,15 @@ Créez une nouvelle règle d'alerte avec les paramètres suivants.
 **Pending period :** `5m`
 
 **Annotations :**
+
 - Summary : `CPU élevé sur {{ $labels.instance }}`
 - Description : `L'utilisation CPU dépasse 80% depuis 5 minutes.`
 
 **Réponse — Quelle requête PromQL complète avez-vous utilisée ?**
 
-    (votre requête ici)
+```promql
+100 - (avg by(instance) (rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100)
+```
 
 ---
 
@@ -251,11 +250,11 @@ Créez une règle qui déclenche une alerte lorsque la RAM disponible passe sous
 
 **Réponse — Quelle requête PromQL avez-vous utilisée ?**
 
-    (votre requête ici)
+    100 - (avg by(instance) (rate(node_disk_discarded_sectors_total{mode="idle"}[5m])) * 100)
 
 **Réponse — Quel seuil (threshold) avez-vous défini ?**
 
-    (votre réponse ici)
+    IS BELOW 15
 
 ---
 
@@ -283,6 +282,7 @@ Puis observez dans Grafana :
 👉 **Alerting → Alert rules**
 
 L'alerte **Instance Down** doit passer :
+
 1. **Normal** → **Pending** (après quelques scrapes manqués)
 2. **Pending** → **Firing** (après 1 minute)
 
@@ -315,12 +315,12 @@ En production, lors d'une maintenance planifiée, on crée un **Silence** pour �
 Dans le menu de gauche :  
 👉 **Alerting → Silences → Add silence**
 
-| Champ | Valeur |
-|-------|--------|
-| Start | Maintenant |
-| End | Dans 1 heure |
+| Champ    | Valeur                      |
+| -------- | --------------------------- |
+| Start    | Maintenant                  |
+| End      | Dans 1 heure                |
 | Matchers | `alertname = Instance Down` |
-| Comment | `Maintenance planifiée` |
+| Comment  | `Maintenance planifiée`     |
 
 Cliquez sur **Submit**.
 

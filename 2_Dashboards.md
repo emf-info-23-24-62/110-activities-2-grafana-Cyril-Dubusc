@@ -4,13 +4,13 @@ Grafana est connecté à Prometheus. Il est maintenant temps de construire des d
 
 ## Comprendre les concepts
 
-| Concept | Description |
-|---------|-------------|
-| **Dashboard** | Ensemble de panels regroupés sur une page |
-| **Panel** | Widget individuel (graphique, jauge, stat…) |
-| **Query** | Requête PromQL envoyée à Prometheus |
+| Concept        | Description                                      |
+| -------------- | ------------------------------------------------ |
+| **Dashboard**  | Ensemble de panels regroupés sur une page        |
+| **Panel**      | Widget individuel (graphique, jauge, stat…)      |
+| **Query**      | Requête PromQL envoyée à Prometheus              |
 | **Time range** | Fenêtre temporelle affichée (dernières 1h, 24h…) |
-| **Refresh** | Intervalle de rafraîchissement automatique |
+| **Refresh**    | Intervalle de rafraîchissement automatique       |
 
 ## Importer un dashboard communautaire
 
@@ -23,7 +23,8 @@ C'est le dashboard le plus utilisé pour monitorer un serveur Linux avec Node Ex
 1. Dans le menu de gauche :  
    👉 **Dashboards → Import**
 
-2. Dans le champ **"Import via grafana.com"**, entrez l'ID :  
+2. Dans le champ **"Import via grafana.com"**, entrez l'ID :
+
    ```
    1860
    ```
@@ -66,14 +67,14 @@ Sélectionnez la datasource `Prometheus`.
 
 ### 3. Les types de visualisation
 
-| Type | Usage |
-|------|-------|
-| **Time series** | Courbes temporelles (CPU, requêtes/s…) |
-| **Stat** | Valeur unique mise en avant (uptime, version…) |
-| **Gauge** | Jauge circulaire (% RAM, % disque…) |
-| **Bar chart** | Comparaison entre séries |
-| **Table** | Données tabulaires |
-| **Heatmap** | Distribution de valeurs dans le temps |
+| Type            | Usage                                          |
+| --------------- | ---------------------------------------------- |
+| **Time series** | Courbes temporelles (CPU, requêtes/s…)         |
+| **Stat**        | Valeur unique mise en avant (uptime, version…) |
+| **Gauge**       | Jauge circulaire (% RAM, % disque…)            |
+| **Bar chart**   | Comparaison entre séries                       |
+| **Table**       | Données tabulaires                             |
+| **Heatmap**     | Distribution de valeurs dans le temps          |
 
 ## Exercice : Dashboard de monitoring complet
 
@@ -84,48 +85,52 @@ Créez un dashboard nommé **"Monitoring complet"** contenant les panels suivant
 **Type de visualisation :** Stat
 
 **Requête PromQL :**
+
 ```promql
 up
 ```
 
 **Réglages :**
+
 - Title : `Instances actives`
-- Dans *Value options*, choisissez **Last** (dernière valeur)
-- Dans *Thresholds* : rouge si `0`, vert si `1`
+- Dans _Value options_, choisissez **Last** (dernière valeur)
+- Dans _Thresholds_ : rouge si `0`, vert si `1`
 
 **Réponse — Quel résultat observez-vous ?**
 
-    (votre réponse ici)
-
+![alt text](panel1.png)
 
 ### Panel 2 — Utilisation CPU
 
 **Type de visualisation :** Time series
 
 **Requête PromQL :**
+
 ```promql
 100 - (avg by(instance) (rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100)
 ```
 
 **Réglages :**
+
 - Title : `CPU Usage (%)`
-- Dans *Standard options*, Unit : `Percent (0-100)`
+- Dans _Standard options_, Unit : `Percent (0-100)`
 
 **Réponse — Quel est le pourcentage de CPU moyen observé ?**
 
-    (votre réponse ici)
-
+51%
 
 ### Panel 3 — Mémoire disponible
 
 **Type de visualisation :** Gauge
 
 **Requête PromQL :**
+
 ```promql
 (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes) * 100
 ```
 
 **Réglages :**
+
 - Title : `RAM disponible (%)`
 - Unit : `Percent (0-100)`
 - Min : `0`, Max : `100`
@@ -133,37 +138,39 @@ up
 
 **Réponse — Quel est le pourcentage de RAM disponible ?**
 
-    (votre réponse ici)
-
+42,4%
 
 ### Panel 4 — Espace disque utilisé
 
 **Type de visualisation :** Gauge
 
 **Requête PromQL :**
+
 ```promql
 100 - ((node_filesystem_avail_bytes{mountpoint="/"} / node_filesystem_size_bytes{mountpoint="/"}) * 100)
 ```
 
 **Réglages :**
+
 - Title : `Disque utilisé (%)`
 - Unit : `Percent (0-100)`
 
 **Réponse — Quel est le pourcentage d'espace disque utilisé ?**
 
-    (votre réponse ici)
-
+42,1%
 
 ### Panel 5 — Requêtes HTTP par seconde (app NodeJS)
 
 **Type de visualisation :** Time series
 
 **Requête PromQL :**
+
 ```promql
 sum by(route) (rate(http_requests_total[1m]))
 ```
 
 **Réglages :**
+
 - Title : `Requêtes HTTP/s par route`
 - Unit : `requests/sec`
 
@@ -171,17 +178,18 @@ sum by(route) (rate(http_requests_total[1m]))
 
     (votre réponse ici)
 
-
 ### Panel 6 — Taux d'erreurs HTTP
 
 **Type de visualisation :** Time series
 
 **Requête PromQL :**
+
 ```promql
 sum(rate(http_requests_total{status_code=~"5.."}[1m]))
 ```
 
 **Réglages :**
+
 - Title : `Erreurs HTTP 5xx/s`
 - Unit : `errors/sec`
 - Threshold : orange si > 0.1, rouge si > 1
@@ -195,11 +203,13 @@ sum(rate(http_requests_total{status_code=~"5.."}[1m]))
 **Type de visualisation :** Time series
 
 **Requête PromQL :**
+
 ```promql
 histogram_quantile(0.95, sum by(le, route) (rate(http_request_duration_seconds_bucket[5m])))
 ```
 
 **Réglages :**
+
 - Title : `Latence P95 par route`
 - Unit : `seconds`
 
@@ -207,17 +217,18 @@ histogram_quantile(0.95, sum by(le, route) (rate(http_request_duration_seconds_b
 
     (votre réponse ici)
 
-
 ### Panel 8 — Utilisateurs actifs
 
 **Type de visualisation :** Stat
 
 **Requête PromQL :**
+
 ```promql
 app_active_users
 ```
 
 **Réglages :**
+
 - Title : `Utilisateurs actifs`
 - Choisissez une couleur adaptée
 
@@ -228,6 +239,7 @@ app_active_users
 ## Sauvegarder le dashboard
 
 Une fois tous les panels créés :
+
 1. Cliquez sur **Save dashboard** (icône disquette en haut à droite)
 2. Donnez-lui le nom `Monitoring complet`
 3. Cliquez sur **Save**
@@ -254,6 +266,7 @@ done
 ## Résultat
 
 Vous avez créé un dashboard complet qui permet de surveiller en un coup d'œil :
+
 - l'état de votre infrastructure (CPU, RAM, disque)
 - le comportement de votre application (requêtes, erreurs, latence)
 
