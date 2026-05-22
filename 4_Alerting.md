@@ -264,7 +264,7 @@ Créez une règle qui déclenche une alerte lorsque le taux d'erreurs 5xx de l'a
 
 **Réponse — Quelle requête PromQL avez-vous utilisée ?**
 
-    (votre requête ici)
+    rate(http_requests_total{app="mon-application", status=~"5.."}[1m]) > 0.5
 
 ---
 
@@ -290,7 +290,7 @@ Un email de notification doit arriver dans votre boîte mail.
 
 **Réponse — Combien de temps s'écoule entre l'arrêt de Node Exporter et la réception de l'email ?**
 
-    (votre réponse ici)
+    1 - 2 minutes
 
 ### Relancer l'instance
 
@@ -302,7 +302,8 @@ sudo systemctl start node_exporter
 
 **Réponse — Quelle est la différence entre une alerte Prometheus (Alertmanager) et une alerte Grafana Alerting ?**
 
-    (votre réponse ici)
+    Graphana : Grafique mais moins poussé pour des requete spécifique
+    Alertmanager : Plus poussé, avec des requet plus spécifique possible
 
 ---
 
@@ -326,7 +327,7 @@ Cliquez sur **Submit**.
 
 **Réponse — Les alertes sont-elles toujours évaluées pendant un Silence ?**
 
-    (votre réponse ici)
+    Oui, il y a juste l'envoie de l'alerte par mail qui est bloquée
 
 ---
 
